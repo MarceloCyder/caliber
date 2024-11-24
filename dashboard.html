@@ -51,9 +51,10 @@
         }
 
         #fullscreen-btn {
+            /*  Botão Tela Cheia */
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 10px;
+            right: 10px;
             z-index: 1000;
             padding: 10px;
             background-color: #34495e;
@@ -102,12 +103,12 @@
             <div class="iframe-container">
                 <div class="iframe-wrapper">
                     <iframe id="powerbi-iframe" title="BI BEUX Análise OTB e Indicadores Comerciais"
-                        src="https://app.powerbi.com/view?r=eyJrIjoiZTNmY2Y5ZjctZmFjZC00YWRlLWIyYjktODkyNmFkYmQ5OWE3IiwidCI6IjM4NmZkMDE4LTYxZGItNDkwNS04ODhjLTJiODg4MTYxZDQ5ZiJ9&pageName=ReportSection&navContentPaneEnabled=false&filterPaneEnabled=false&toolbarHidden=true&chromeless=true"
+                        src="https://app.powerbi.com/view?r=eyJrIjoiZTNmY2Y5ZjctZmFjZC00YWRlLWIyYjktODkyNmFkYmQ5OWE3IiwidCI6IjM4NmZkMDE4LTYxZGItNDkwNS04ODhjLTJiODg4MTYxZDQ5ZiJ9"
                         frameborder="0" allowFullScreen="true">
                     </iframe>
                 </div>
             </div>
-
+            <button id="fullscreen-btn">Tela Cheia</button>
         </main>
     </div>
     <script>
@@ -128,7 +129,7 @@
 
             function updateIframeSrc(pageName) {
                 const baseUrl = 'https://app.powerbi.com/view?r=eyJrIjoiZTNmY2Y5ZjctZmFjZC00YWRlLWIyYjktODkyNmFkYmQ5OWE3IiwidCI6IjM4NmZkMDE4LTYxZGItNDkwNS04ODhjLTJiODg4MTYxZDQ5ZiJ9';
-                const newUrl = `${baseUrl}&pageName=${pageName}&navContentPaneEnabled=false&filterPaneEnabled=false&toolbarHidden=true&chromeless=true`;
+                const newUrl = `${baseUrl}&pageName=${pageName}&navContentPaneEnabled=false&filterPaneEnabled=false&toolbarHidden=true`;
                 iframe.src = newUrl;
             }
 
@@ -136,10 +137,8 @@
                 item.addEventListener('click', function (e) {
                     e.preventDefault();
                     const selectedPage = this.getAttribute('data-page');
-
                     menuItems.forEach(mi => mi.classList.remove('active'));
                     this.classList.add('active');
-
                     updateIframeSrc(selectedPage);
                 });
             });
@@ -152,23 +151,19 @@
 
             fullscreenBtn.addEventListener('click', function () {
                 if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen().then(() => {
-                        document.body.classList.add('fullscreen');
-                    }).catch(err => {
+                    document.documentElement.requestFullscreen().catch(err => {
                         console.log(`Error attempting to enable full-screen mode: ${err.message}`);
                     });
-                } else {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen().then(() => {
-                            document.body.classList.remove('fullscreen');
-                        });
-                    }
+                } else if (document.exitFullscreen) {
+                    document.exitFullscreen();
                 }
             });
 
             document.addEventListener('fullscreenchange', function () {
                 if (!document.fullscreenElement) {
                     document.body.classList.remove('fullscreen');
+                } else {
+                    document.body.classList.add('fullscreen');
                 }
             });
 

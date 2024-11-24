@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateIframeSrc(pageName) {
         if (!iframe) return;
-        const baseUrl = 'https://app.powerbi.com/view?r=eyJrIjoiZTNmY2Y5ZjctZmFjZC00YWRlLWIyYjktODkyNmFkYmQ5OWE3IiwidCI6IjM4NmZkMDE4LTYxZGItNDkwNS04ODhjLTJiODg4MTYxZDQ5ZiJ9';
-        const newUrl = `${baseUrl}&pageName=${pageName}&navContentPaneEnabled=false&filterPaneEnabled=false&toolbarHidden=true`;
+        const baseUrl = 'https://app.powerbi.com/groups/5606ec57-3bc7-4eea-82c3-d1bfa00c7513/reports/948fd5df-254d-4ba7-b739-2544d582b312';
+        const newUrl = `${baseUrl}/${pageName}?experience=power-bi&navContentPaneEnabled=false&filterPaneEnabled=false&toolbarHidden=true`;
         iframe.src = newUrl;
         iframe.onload = removeFooter;
     }
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.addEventListener('fullscreenchange', handleFullscreenChange);
 
             // Inicializar com a primeira página
-            updateIframeSrc('ReportSection');
+            updateIframeSrc('978b5a6d63c886ae5fd5');
         }
     } else {
         console.log('Neither login form nor dashboard elements found');
