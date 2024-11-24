@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BI BEUX Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <style>
+        .iframe-container {
+            position: relative;
+            overflow: hidden;
+            padding-top: 56.25%;
+            /* 16:9 Aspect Ratio */
+            height: calc(100vh - 60px);
+            /* Ajuste conforme necessário */
+        }
+
+        .iframe-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .iframe-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .user-info span {
+            margin-bottom: 10px;
+        }
+
+        #logout-btn {
+            color: white;
+            text-decoration: none;
+            padding: 5px 10px;
+            background-color: #34495e;
+            border-radius: 5px;
+        }
+
+        #fullscreen-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            padding: 10px;
+            background-color: #34495e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .fullscreen .sidebar,
+        .fullscreen #fullscreen-btn {
+            display: none;
+        }
+
+        .fullscreen .content {
+            padding: 0;
+        }
+
+        .fullscreen .iframe-container {
+            height: 100vh;
+            padding-top: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="logo-container">
+                <img src="CaliberLogoBranco.webp" alt="Logo" class="logo">
+            </div>
+            <ul class="menu">
+                <li><a href="#" data-page="ReportSection">Estoque Resumo</a></li>
+                <li><a href="#" data-page="ReportSection4865c3779d780eb78cb8">Análise Estoque</a></li>
+                <li><a href="#" data-page="056a6af4a3c595b4d61b">Análise Produtos</a></li>
+                <li><a href="#" data-page="0d824456aeee813391fe">Resultado das Vendas</a></li>
+                <li><a href="#" data-page="978b5a6d63c886ae5fd5">Análise dos Clientes</a></li>
+            </ul>
+            <div class="user-info">
+                <i class="fas fa-user"></i>
+                <span id="user-display">Usuário</span>
+                <a href="#" id="logout-btn">Sair</a>
+            </div>
+        </nav>
+        <main class="content">
+            <div class="iframe-container">
+                <div class="iframe-wrapper">
+                    <iframe id="powerbi-iframe" title="BI BEUX Análise OTB e Indicadores Comerciais"
+                        src="https://app.powerbi.com/view?r=eyJrIjoiZTNmY2Y5ZjctZmFjZC00YWRlLWIyYjktODkyNmFkYmQ5OWE3IiwidCI6IjM4NmZkMDE4LTYxZGItNDkwNS04ODhjLTJiODg4MTYxZDQ5ZiJ9&pageName=ReportSection&navContentPaneEnabled=false&filterPaneEnabled=false&toolbarHidden=true&chromeless=true"
+                        frameborder="0" allowFullScreen="true">
+                    </iframe>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const iframe = document.getElementById('powerbi-iframe');
+            const menuItems = document.querySelectorAll('.menu a');
+            const logoutBtn = document.getElementById('logout-btn');
+            const userDisplay = document.getElementById('user-display');
+            const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+            // Verificar se o usuário está logado
+            const user = localStorage.getItem('user');
+            if (!user) {
+                window.location.href = './index.html';
+            } else {
+                userDisplay.textContent = user;
+            }
+
+            function updateIframeSrc(pageName) {
+                const baseUrl = 'https://app.powerbi.com/view?r=eyJrIjoiZTNmY2Y5ZjctZmFjZC00YWRlLWIyYjktODkyNmFkYmQ5OWE3IiwidCI6IjM4NmZkMDE4LTYxZGItNDkwNS04ODhjLTJiODg4MTYxZDQ5ZiJ9';
+                const newUrl = `${baseUrl}&pageName=${pageName}&navContentPaneEnabled=false&filterPaneEnabled=false&toolbarHidden=true&chromeless=true`;
+                iframe.src = newUrl;
+            }
+
+            menuItems.forEach(item => {
+                item.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const selectedPage = this.getAttribute('data-page');
+
+                    menuItems.forEach(mi => mi.classList.remove('active'));
+                    this.classList.add('active');
+
+                    updateIframeSrc(selectedPage);
+                });
+            });
+
+            logoutBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                localStorage.removeItem('user');
+                window.location.href = './index.html';
+            });
+
+            fullscreenBtn.addEventListener('click', function () {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().then(() => {
+                        document.body.classList.add('fullscreen');
+                    }).catch(err => {
+                        console.log(`Error attempting to enable full-screen mode: ${err.message}`);
+                    });
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen().then(() => {
+                            document.body.classList.remove('fullscreen');
+                        });
+                    }
+                }
+            });
+
+            document.addEventListener('fullscreenchange', function () {
+                if (!document.fullscreenElement) {
+                    document.body.classList.remove('fullscreen');
+                }
+            });
+
+            // Inicializar com a primeira página
+            updateIframeSrc('ReportSection');
+        });
+    </script>
+</body>
+
+</html>
